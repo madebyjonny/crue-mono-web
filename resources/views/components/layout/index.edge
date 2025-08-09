@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      Crue - {{{ title || ""}}}
+    </title>
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('dumper')
+  </head>
+  <body class="min-h-screen w-screen font-sans">
+    {{{ await $slots.main() }}}
+  </body>
+</html>
