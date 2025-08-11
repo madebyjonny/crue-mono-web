@@ -7,11 +7,30 @@
   @if(auth.user)
     <p>
       Hello, {{ auth.user.fullName }}! You are logged in.
+      <form method="POST" action="{{ route('auth.logout') }}">
+        {{ csrfField() }}
+      <button type="submit">Logout</button>
+      </form>
     </p>
 
-    <form method="POST" action="{{ route('auth.logout') }}">
+    <h2>
+      Organisations
+    </h2>
+    <ul>
+      @each(organisation in user.organisations)
+        <li>
+          <a href="#">
+            {{ organisation.name }}
+          </a>
+        </li>
+      @endeach
+    </ul>
+
+    <form method="POST" action="{{ route('organisations.store') }}">
       {{ csrfField() }}
-      <button type="submit">Logout</button>
+      <label for="organisationName">Create Organisation</label>
+      <input type="text" id="organisationName" name="name" required />
+      <button type="submit">Create</button>
     </form>
 
   @else

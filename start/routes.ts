@@ -10,11 +10,22 @@
 const LoginController = () => import('#controllers/auth/login_controller')
 const RegistersController = () => import('#controllers/auth/register_controller')
 const LogoutController = () => import('#controllers/auth/logout_controller')
+const OrganisationsController = () => import('#controllers/organisations_controller')
+
+import User from '#models/user'
 import router from '@adonisjs/core/services/router'
 
 router.get('/', async ({ auth, view }) => {
-  await auth.check()
-  return view.render('pages/home')
+  const authCheck = await auth.check()
+
+  if (!authCheck) {
+    return view.render('pages/home', { user: null })
+  }
+
+  const userData = await User.findOrFail(auth.user?.id)
+  await userData.load('organisations')
+
+  return view.render('pages/home', { user: userData })
 })
 
 router
@@ -27,3 +38,9 @@ router
     router.post('/logout', [LogoutController, 'handle']).as('logout')
   })
   .as('auth')
+
+router
+  .group(() => {
+    router.post('/', [OrganisationsController, 'store']).as('store')
+  })
+  .as('organisations')
